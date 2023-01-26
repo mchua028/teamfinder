@@ -1,4 +1,6 @@
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { Injectable, HttpException, HttpStatus,
+    NotFoundException,
+    ServiceUnavailableException, } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User, UserDocument } from "../model/user.schema";
@@ -69,17 +71,30 @@ export class UserService {
         console.log('username wrong');
         throw new HttpException('Incorrect username or password', HttpStatus.UNAUTHORIZED)
     }
-    async getOne(email: string): Promise<User> {
+    async getOne(email: string): Promise<any> {
         return await this.userModel.findOne({ email }).exec();
     }
     // async update(id, project: Project): Promise<Project> {
     //     return await this.projectModel.findByIdAndUpdate(id, project, { new: true })
     //     //exceptions?
     // }
-    async updateProfile(email: string, user: User): Promise<User> {
-        console.log('updating profile for '+this.getOne(email));
-        console.log(this.getOne(email));
-        const id=this.getOne(email);
+    async updateProfile(id: string, user: User): Promise<User> {
+        console.log('updating profile for '+id);
         return await this.userModel.findByIdAndUpdate(id, user, { new: true })
     }
+
+    async retrieveProfile(id: string, response: Response) {
+        try {
+            const data = await this.userModel.findOne({ _id: id })
+            if (!data) {
+                throw new NotFoundException(null, 'ProfileNotFound')
+            }
+            return data;
+
+        } catch (e) {
+            console.error(e)
+            throw new ServiceUnavailableException()
+        }
+    }
+
 }

@@ -19,7 +19,11 @@ export class UserController {
     }
     @Put('/updateProfile')
     async updateProfile(@Res() response, @Req() request, @Body() user: User) {
-        const updatedUser = await this.userService.updateProfile(request.user.email, user);
+        const updatedUser = await this.userService.updateProfile(request.user, user);
         return response.status(HttpStatus.OK).json(updatedUser)
+    }
+    @Get('/retrieveProfile')
+    async retrieveProfile(@Res() response, @Req() request) {
+        return this.userService.retrieveProfile(request.user, response);
     }
 }

@@ -18,12 +18,14 @@ export class isAuthenticated implements NestMiddleware {
             ) {
                 const token = req.headers.authorization.split(' ')[1];
                 const decoded = await this.jwt.verify(token);
-                const userName = await this.userService.getOne(decoded.name);
-                const userEmail = await this.userService.getOne(decoded.email);
-                if (userEmail && userName) {
-                    req.user = {name:userName,email:userEmail};
+                const user = await this.userService.getOne(decoded.email);
+                if (user) {
+                    req.user = user._id;
                     next();
                 } else {
+                    console.log('token wrong');
+                    console.log('token:',token);
+                    console.log('user:',user);
                     throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
 
                 }
@@ -31,7 +33,8 @@ export class isAuthenticated implements NestMiddleware {
                 throw new HttpException('No token found', HttpStatus.NOT_FOUND)
 
             }
-        }catch {
+        }catch(e) {
+            console.log(e);
          throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
        }
     }

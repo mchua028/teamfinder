@@ -1,10 +1,9 @@
 import React from 'react';
 import Header from '../Header'
 import { LoadingButton } from "@mui/lab";
-import { Box,Grid,Stack,TextField } from "@mui/material";
+import { Box,Container,Grid,Stack,TextField } from "@mui/material";
 import TextInput from '../TextInput';
 import AutocompleteInput from '../AutocompleteInput';
-import Button from '@mui/material/Button';
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Redirect } from "react-router-dom";
@@ -13,26 +12,45 @@ import axios from 'axios';
 import {getUserFromStorage} from '../utils/user-localstorage.util';
 import {getTokenFromStorage} from '../utils/user-localstorage.util';
 
+const validationSchema = yup.object({
+    age: yup.number().typeError('Age must be a number').positive('Age must be greater than zero').required("Age is required"),
+    occupation: yup.string().required("Occupation is required"),
+    schOrEmployer: yup.string().required("School/Employer is required"),
+    purpose: yup.string(),
+    skills: yup.array()
+  });
 
 export default function EditProfile(props) {
   // const isLoggedIn=false;
   const isLoggedIn=getTokenFromStorage()? true: false;
   const token=getTokenFromStorage();
-
-  const validationSchema = yup.object({
-    Age: yup.number().required("Age is required"),
-    Occupation: yup.string().required("Occupation is required"),
-    SchOrEmployer: yup.string().required("School/Employer is required"),
-    Purpose: yup.string().max(500,"Length must be at most 500 chars").required("Purpose is required"),
-
-  });
-
   const userFromStorage=getUserFromStorage();
-  console.log(userFromStorage);
-  
+  // console.log(userFromStorage);
   const userName=userFromStorage? userFromStorage.split(',')[0]:'';
   const userEmail=userFromStorage? userFromStorage.split(',')[1]:'';
-  
+  const skillOptions=["Python","Java","C++","Javascript","HTML","CSS","Unity","R","Web development","Mobile development","Game development","CI/CD","Database design","Data analysis"];
+
+  const retrieveProfile=async () => {
+      console.log('retrieving profile..')
+      try {
+        const response=await axios.get("http://localhost:3002/api/v1/user/retrieveProfile",
+                        {
+                          headers: ({
+                              Authorization: 'Bearer ' + token
+                          })
+                        });
+        console.log('response from retrieveProfile:',response);
+        return response;
+      }
+      catch(e){
+        console.log(e);
+        alert(e);
+      }
+      
+    }
+
+  const oldProfile=retrieveProfile();
+  console.log(oldProfile);
 
   const formik = useFormik({
     initialValues: {
@@ -46,7 +64,7 @@ export default function EditProfile(props) {
     onSubmit: async (values, { setFieldError }) => {
       console.log('submitting profile..')
       try {
-        const response = await axios.post("http://localhost:3002/api/v1/user/updateProfile", {
+        const response = await axios.put("http://localhost:3002/api/v1/user/updateProfile", {
           age: values.age,
           occupation: values.occupation,
           schOrEmployer: values.schOrEmployer,
@@ -59,7 +77,7 @@ export default function EditProfile(props) {
           })
         });
 
-        alert("Profile saved successfully");
+        alert("Profile saved successfully!");
       } catch (e) {
         // if (
         //   e?.response?.data?.message &&
@@ -76,11 +94,7 @@ export default function EditProfile(props) {
       }
     },
   });
-
-  const skillOptions=["Python","Java","C++","Javascript","HTML","CSS","Unity","R","Web development","Mobile development","Game development","CI/CD","Database design","Data analysis"];
-  
-
-  console.log(' editprofile isLoggedIn',isLoggedIn);
+  // console.log(' editprofile isLoggedIn',isLoggedIn);
   return !isLoggedIn ? (
     <Redirect
       to={{
@@ -88,16 +102,17 @@ export default function EditProfile(props) {
       }}
     />
   ) : (
-    // <Stack direction="column" spacing={2} sx={{ paddingLeft:'24px', paddingRight:'24px'}}>
-    <Box>
+    <>
+    {/* // <Stack direction="column" spacing={2} sx={{ paddingLeft:'24px', paddingRight:'24px'}}> */}
+      <Container  >
         <Header headerText="My Profile"/>
         <Box
-          component="form"
-          onSubmit={formik.handleSubmit}
-          sx={{ mt: 1, display: "flex", flexDirection: "column", flexGrow: 1, justifyContent: "center", marginY: 4 }}
-          maxWidth="xs"
+          component="form" onSubmit={formik.handleSubmit}
+          sx={{ mt: 1, display: "flex", flexDirection: "column", flexGrow: 1, alignItems: 'center', marginY: 4 }}
+          
         >
-          <Stack direction="column" spacing={2} justifyContent="right">
+          <Grid container spacing={2} width='60%' >
+          <Grid item xs={12}>
             <TextInput
               required
               // sx={{width: '60px'}}
@@ -109,6 +124,8 @@ export default function EditProfile(props) {
                 readOnly: true,
             }}
             />
+            </Grid>
+            <Grid item xs={12}>
             <TextInput
               required
               // sx={{width: '60px'}}
@@ -120,6 +137,8 @@ export default function EditProfile(props) {
                   readOnly: true,
               }}
             />
+            </Grid>
+            <Grid item xs={12}>
             <TextInput
               required
               // sx={{width: '60px'}}
@@ -135,9 +154,11 @@ export default function EditProfile(props) {
               helperText={
                 formik.touched.age && formik.errors.age
               }
-              inputProps={{ maxlength: 3, inputMode: 'numeric', pattern: '[0-9]*' }}
+              inputProps={{ maxLength: 3 }}
               
             />
+            </Grid>
+            <Grid item xs={12}>
             <TextInput
               required
               // sx={{width: '60px'}}
@@ -158,6 +179,8 @@ export default function EditProfile(props) {
                 maxLength: 20,
               }}
             />
+            </Grid>
+            <Grid item xs={12}>
             <TextInput
               required
               // sx={{width: '60px'}}
@@ -178,6 +201,8 @@ export default function EditProfile(props) {
                 maxLength: 30,
               }}
             />
+            </Grid>
+            <Grid item xs={12}>
             <TextInput
               
               multiline
@@ -200,9 +225,22 @@ export default function EditProfile(props) {
                 style: { color: "#fff" }
               }}
             />
+            </Grid>
+            <Grid item xs={12}>
             <AutocompleteInput
               multiple
-              id="skills"
+              // value={formik.values.skills}
+              onChange={(event, newValue) => {
+                formik.values.skills=newValue;
+                console.log(formik.values.skills);
+              }}
+              error={
+                formik.touched.skills &&
+                Boolean(formik.errors.skills)
+              }
+              // helperText={
+              //   formik.touched.skills && formik.errors.skills
+              // }
               options={skillOptions}
               getOptionLabel={(option) => option}
               filterSelectedOptions
@@ -211,20 +249,27 @@ export default function EditProfile(props) {
                 style: { color: "#fff" }
               }}
             />
-            
-          </Stack>
+            </Grid>
+          </Grid>
           <LoadingButton
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{
-              backgroundColor: "secondary.main", color: "#000", mt:2
-            }}
-            loading={formik.isSubmitting}
-          >
-            Save
+              type="submit"
+              variant="contained"
+              sx={{
+                mt: 3,
+                mb: 2,
+                backgroundColor: "secondary.main",
+                color: "black",
+                textTransform: "none",
+                borderRadius: 30,
+                fontSize: 20,
+                width: '58%'
+              }}
+              loading={formik.isSubmitting}
+            >
+            Save Profile
           </LoadingButton>
         </Box>
-      </Box>
-  )
+      </Container>
+    </>
+  );
 }
