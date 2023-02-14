@@ -23,6 +23,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { isAuthenticated } from './app.middleware';
 
+var dotenv = require('dotenv');
+dotenv.config();
 
 
 @Module({
