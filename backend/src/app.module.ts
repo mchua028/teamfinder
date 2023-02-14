@@ -23,9 +23,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { isAuthenticated } from './app.middleware';
 
-var dotenv = require('dotenv');
-dotenv.config();
-
+require('dotenv').config();
 
 @Module({
   imports: [
@@ -35,7 +33,6 @@ dotenv.config();
     // TryModule,
     MongooseModule.forRoot(process.env.MONGO_URL),
     
-    //mongo cluster password:S8CRMly2mPJi3Wi7
     MulterModule.register({
       storage: diskStorage({
         destination: './public',
