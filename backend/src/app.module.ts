@@ -31,7 +31,7 @@ import { isAuthenticated } from './app.middleware';
     // FirebaseModule,
     // UsersModule,
     // TryModule,
-    MongooseModule.forRoot('mongodb+srv://minghui:S8CRMly2mPJi3Wi7@teamfinder.m4vz9ee.mongodb.net/?retryWrites=true&w=majority'),
+    MongooseModule.forRoot(process.env.MONGO_URL),
     
     //mongo cluster password:S8CRMly2mPJi3Wi7
     MulterModule.register({
