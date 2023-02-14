@@ -20,7 +20,8 @@ export default function Header({headerText}) {
       <Box
         sx={{
           display: "block",
-          justifyContent: "left"
+          justifyContent: "left",
+          paddingTop:'20px'
         }}
       >
         <Typography

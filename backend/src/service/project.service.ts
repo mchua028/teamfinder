@@ -19,11 +19,17 @@ export class ProjectService {
         return newProject.save();
     }
 
-    async readAllProjects(id): Promise<any> {
-        if (id.id) {
-            return this.projectModel.findOne({ _id: id.id }).populate("createdBy").exec();
-        }
-        return this.projectModel.find().populate("createdBy").exec();
+    async readMyProjects(id:string): Promise<any> {
+       
+        return await this.projectModel.find({createdBy:id}).exec();
+    } 
+
+    async readAllProjects(): Promise<any> {
+        const projectData = await this.projectModel.find().exec();
+        // if (!projectData || projectData.length == 0) {
+        //     throw new NotFoundException('Projects data not found!');
+        // }
+        return projectData;
     }
 
     async readOneProject(id: string, response: Response, request: Request) {
@@ -61,10 +67,10 @@ export class ProjectService {
     }
 
     async update(id, project: Project): Promise<Project> {
-        return await this.projectModel.findByIdAndUpdate(id, project, { new: true })
+        return await this.projectModel.findByIdAndUpdate(id, project, { new: true }).exec();
         //exceptions?
     }
     async delete(id): Promise<any> {
-        return await this.projectModel.findByIdAndRemove(id);
+        return await this.projectModel.findByIdAndRemove(id).exec();
     }
 }

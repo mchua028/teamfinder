@@ -18,12 +18,11 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
-import GoogleAuth from './GoogleAuth'
 import { getUserFromStorage, getTokenFromStorage } from './utils/user-localstorage.util';
 
 
-const pages = ['My Projects', 'Projects', 'People'];
-const settings = ['Profile', 'Applied Projects', 'Logout'];
+const pages = {'My Projects':'/my-projects', 'Projects':'/my-projects', 'People':'/my-projects'};
+const accountpages = {'Profile':'/edit-profile', 'Applied Projects':'/applied-projects', 'Logout':'/logout'};
 
 function NavBar(props) {
     const isLoggedIn=getTokenFromStorage()? true: false;
@@ -48,7 +47,6 @@ function NavBar(props) {
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
-        history.push("/services")
     };
 
     const handleCloseUserMenu = () => {
@@ -60,13 +58,25 @@ function NavBar(props) {
         history.push("/edit-profile")
     }
 
+    const navigateToAccountPages = (page) => {
+        handleCloseUserMenu();
+        console.log(accountpages[page]);
+        history.push(accountpages[page]);
+    }
+
+    const navigateToPages = (page) => {
+        // handleCloseNavMenu();
+        console.log(pages[page]);
+        history.push(pages[page]);
+    }
+
     return (
         <AppBar position='sticky' sx={{ backgroundColor: 'primary.main', boxShadow: 'none' }}>
         <Container maxWidth="xl">
             <Toolbar disableGutters>
             {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
             <Typography
-                variant="h6"
+                variant="h5"
                 noWrap
                 component="a"
                 href="/"
@@ -75,6 +85,7 @@ function NavBar(props) {
                 display: { xs: 'none', md: 'flex' },
                 fontFamily: 'monospace',
                 fontWeight: 700,
+                // fontSize: 26,
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
@@ -153,6 +164,7 @@ function NavBar(props) {
                 flexGrow: 1,
                 fontFamily: 'monospace',
                 fontWeight: 700,
+                // fontSize: 26,
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
@@ -161,10 +173,11 @@ function NavBar(props) {
                 teamFinder
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'right', paddingRight: '10px', visibility: isVisible }}>
-                {pages.map((page) => (
+                {Object.keys(pages).map((page) => (
                 <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
+                    // key={page}
+                    // onClick={navigateToPages(page)}
+                    component={Link} to={pages[page]}
                     sx={{ my: 2, color: 'white', display: 'block' }}
                     visibility= {isLoggedIn}
                 >
@@ -206,11 +219,16 @@ function NavBar(props) {
                     <Typography textAlign="center">{setting}</Typography>
                     </MenuItem>
                 ))} */}
-                    <Typography> Hi, {userName} </Typography>
-                    <MenuItem onClick={navigateToProfile}>
+                    <Typography align='center' > Hi, {userName} </Typography>
+                    <MenuItem 
+                    component={Link}
+                    to="/edit-profile"
+                        // onClick={navigateToProfile}
+                    >
                         <ListItemIcon>
                             <EditIcon /> 
                         </ListItemIcon>
+                        
                         Edit Profile
                     </MenuItem>
                     <MenuItem>

@@ -80,16 +80,24 @@ export class UserService {
     // }
     async updateProfile(id: string, user: User): Promise<User> {
         console.log('updating profile for '+id);
-        return await this.userModel.findByIdAndUpdate(id, user, { new: true })
+        return await this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
     }
 
-    async retrieveProfile(id: string, response: Response) {
+    async retrieveProfile(id: string) {
         try {
-            const data = await this.userModel.findOne({ _id: id })
+            const data = await this.userModel.findById(id).exec();
             if (!data) {
                 throw new NotFoundException(null, 'ProfileNotFound')
             }
-            return data;
+            const profile={
+                'age':data.age,
+                'occupation':data.occupation,
+                'schOrEmployer':data.schOrEmployer,
+                'purpose':data.purpose,
+                'skills':data.skills
+            }
+            console.log(profile);
+            return profile;
 
         } catch (e) {
             console.error(e)

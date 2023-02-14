@@ -24,6 +24,8 @@ export class UserController {
     }
     @Get('/retrieveProfile')
     async retrieveProfile(@Res() response, @Req() request) {
-        return this.userService.retrieveProfile(request.user, response);
+        const currentProfile = await this.userService.retrieveProfile(request.user);
+        return response.status(HttpStatus.OK).json(currentProfile);
+        
     }
 }

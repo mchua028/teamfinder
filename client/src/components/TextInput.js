@@ -4,6 +4,7 @@ import { TextField } from "@mui/material";
 export default function TextInput({ ...rest }) {
     return (
         <TextField
+        InputLabelProps={{ shrink: true }}
         {...rest}
         sx={{
             input: {color: '#fff'},

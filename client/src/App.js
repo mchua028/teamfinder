@@ -6,6 +6,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Signup from './components/pages/Signup';
 import Login from './components/pages/Login';
 import EditProfile from './components/pages/EditProfile';
+import MyProjectsPage from './components/pages/MyProjects/MyProjectsPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn ] = useState(false);
@@ -34,6 +35,7 @@ function App() {
                 <Switch>
                   <Route path='/home' component={(props) => (<Home {...props} isLoggedIn={isLoggedIn} user={user}/>)} />
                   <Route path='/edit-profile' component={(props) => (<EditProfile {...props} isLoggedIn={isLoggedIn} user={user}/>)} />
+                  <Route path='/my-projects' component={(props) => (<MyProjectsPage {...props} isLoggedIn={isLoggedIn}/>)} />
                   {/* <Route path='/home' component={Home}/>
                   <Route path='/edit-profile' component={EditProfile}/> */}
             
