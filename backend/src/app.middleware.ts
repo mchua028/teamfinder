@@ -23,9 +23,6 @@ export class isAuthenticated implements NestMiddleware {
                     req.user = user._id;
                     next();
                 } else {
-                    console.log('token wrong');
-                    console.log('token:',token);
-                    console.log('user:',user);
                     throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
 
                 }

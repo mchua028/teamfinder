@@ -5,18 +5,9 @@ import Header from '../../Header';
 import StyledTabs from '../../StyledTabs';
 import StyledTab from '../../StyledTab';
 import AppliedProjectsList from './appliedProjectsList';
+import FloatingChatBox from '../../FloatingChatBox';
 import { Box,CircularProgress,Container,Typography,Button,Stack,Chip,Link as MuiLink,Dialog,Grid} from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Avatar from '@mui/material/Avatar';
 
 import { Redirect,Link,useParams } from "react-router-dom";
 import axios from 'axios';
@@ -109,6 +100,7 @@ export default function AppliedProjects(props) {
                     
                 </Box>
             </Stack>
+            {/* <FloatingChatBox /> */}
             
         </Container>
             

@@ -22,7 +22,7 @@ import { getUserFromStorage, getTokenFromStorage } from './utils/user-localstora
 
 
 const pages = {'My Projects':'/my-projects', 'Projects':'/projects', 'People':'/my-projects'};
-const accountpages = {'Profile':'/edit-profile', 'Applied Projects':'/applied-projects', 'Logout':'/logout'};
+const accountpages = {'Profile':'/edit-profile', 'Applied Projects':'/applied-projects', 'Logout':'/'};
 
 function NavBar(props) {
     const isLoggedIn=getTokenFromStorage()? true: false;
@@ -68,6 +68,13 @@ function NavBar(props) {
         // handleCloseNavMenu();
         console.log(pages[page]);
         history.push(pages[page]);
+    }
+
+    const handleLogout=()=>{
+        localStorage.clear();
+        handleCloseUserMenu();
+        history.push('/');
+        window.location.reload();
     }
 
     return (
@@ -240,7 +247,9 @@ function NavBar(props) {
                         </ListItemIcon>
                         Applied Projects
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem
+                    onClick={handleLogout}
+                    >
                         <ListItemIcon>
                             <Logout fontSize="small" />
                         </ListItemIcon>

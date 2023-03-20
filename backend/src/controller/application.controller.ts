@@ -23,13 +23,6 @@ export class ApplicationController {
             newApplication
         })
     }
-    // @Get()
-    // async readAll(@Res() response, @Req() request): Promise<Object> {
-    //     const applications = await this.applicationService.readAllApplications();
-    //     return response.status(HttpStatus.OK).json(applications);
-
-    // }
-
     @Get('/project/:projectId')
     async readProjectApplications(@Param('projectId') projectId, @Res() response, @Req() request): Promise<Object> {
         const myApplications = await this.applicationService.readProjectApplications(projectId);
@@ -48,8 +41,6 @@ export class ApplicationController {
         return response.status(HttpStatus.OK).json(myApplication);
     }
 
-    
-
     @Put('/:id')
     async update(@Res() response, @Param('id') id, @Body() application: Application) {
         
@@ -57,12 +48,4 @@ export class ApplicationController {
         
         return response.status(HttpStatus.OK).json(updatedApplication)
     }
-    //handle exceptions?
-    // @Delete('/:id')
-    // async delete(@Res() response, @Param('id') id) {
-    //     await this.applicationService.delete(id);
-    //     return response.status(HttpStatus.OK).json({
-    //         user: null
-    //     })
-    // }
 }

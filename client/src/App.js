@@ -12,16 +12,12 @@ import AppliedProjects from './components/pages/AppliedProjects/AppliedProjects'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn ] = useState(false);
-  console.log("isLoggedIn",isLoggedIn);
 
   const [user, setUser] = useState();
 
   useEffect(() => {
-    //TODO: clear localStorage on logout
     const token = localStorage.getItem("token");
-    console.log('hi');
     const foundUser = localStorage.getItem("user");
-    console.log("foundUser",foundUser);
     if (token && foundUser) {
       
       setUser(foundUser);

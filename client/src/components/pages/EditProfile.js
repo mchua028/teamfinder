@@ -6,7 +6,7 @@ import TextInput from '../TextInput';
 import AutocompleteInput from '../AutocompleteInput';
 import * as yup from "yup";
 import { Formik } from "formik";
-import { Redirect } from "react-router-dom";
+import { Redirect,useHistory } from "react-router-dom";
 import axios from 'axios';
 
 import {getUserFromStorage} from '../utils/user-localstorage.util';
@@ -21,6 +21,7 @@ const validationSchema = yup.object({
   });
 
 export default function EditProfile(props) {
+  const history= useHistory();
   // const isLoggedIn=false;
   const isLoggedIn=getTokenFromStorage()? true: false;
   const token=getTokenFromStorage();
@@ -46,7 +47,14 @@ export default function EditProfile(props) {
                           setProfile(res.data);
                         })
                         .catch((e)=>{
-                          alert(e);
+                          if(e.code===401){
+                            localStorage.clear();
+                            history.push('/');
+                            window.location.reload();
+                          }
+                          else{
+                            alert('An unspecified error occured.');
+                          }
                         }
                         );
       // ...
