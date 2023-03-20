@@ -57,7 +57,7 @@ function Login(props) {
           // }
   
         } catch(e) {
-          console.log(e);
+          alert(e);
           setFieldError("email", "Invalid email or password. Please try again.");
           setFieldError("password", "Invalid email or password. Please try again."
           );

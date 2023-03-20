@@ -21,7 +21,7 @@ import { useTheme } from '@mui/material/styles';
 import { getUserFromStorage, getTokenFromStorage } from './utils/user-localstorage.util';
 
 
-const pages = {'My Projects':'/my-projects', 'Projects':'/my-projects', 'People':'/my-projects'};
+const pages = {'My Projects':'/my-projects', 'Projects':'/projects', 'People':'/my-projects'};
 const accountpages = {'Profile':'/edit-profile', 'Applied Projects':'/applied-projects', 'Logout':'/logout'};
 
 function NavBar(props) {
@@ -102,7 +102,7 @@ function NavBar(props) {
                 aria-haspopup="true"
                 onClick={handleOpenNavMenu}
                 color="inherit"
-                visibility={isLoggedIn}
+                // visibility={isLoggedIn}
                 >
                 <MenuIcon />
                 </IconButton>
@@ -179,7 +179,7 @@ function NavBar(props) {
                     // onClick={navigateToPages(page)}
                     component={Link} to={pages[page]}
                     sx={{ my: 2, color: 'white', display: 'block' }}
-                    visibility= {isLoggedIn}
+                    // visibility= {isLoggedIn}
                 >
                     {page}
                 </Button>
@@ -188,7 +188,7 @@ function NavBar(props) {
 
             <Box sx={{ flexGrow: 0, visibility: isVisible }}>
                 <Tooltip title="Me" 
-                visibility= {isLoggedIn}
+                // visibility= {isLoggedIn}
                 >
                 <IconButton size="small" onClick={handleOpenUserMenu}>
                     <Avatar sx={{ width: 32, height: 32, backgroundColor: "#FFFFFF" }}/>
@@ -231,7 +231,10 @@ function NavBar(props) {
                         
                         Edit Profile
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem
+                    component={Link}
+                    to="/applied-projects"
+                    >
                         <ListItemIcon>
                             <AssignmentIcon fontSize="small" />
                         </ListItemIcon>

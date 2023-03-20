@@ -4,6 +4,7 @@ import { useRouteMatch, Switch, Route } from "react-router-dom";
 
 import AddProject from "./AddProject";
 import MyProjects from "./MyProjects";
+import ProjectDetails from "./ProjectDetails";
 
 export default function MyProjectsPage() {
   const { path } = useRouteMatch();
@@ -15,6 +16,9 @@ export default function MyProjectsPage() {
       </Route>
       <Route path={`${path}/add-project`}>
         <AddProject />
+      </Route>
+      <Route path={`${path}/:projectId`}>
+        <ProjectDetails />
       </Route>
     </Switch>
   );

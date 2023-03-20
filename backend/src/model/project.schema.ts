@@ -25,9 +25,11 @@ export class Project {
     @Prop()
     filledVacancies: number;
     @Prop()
-    coverImage: string;
-    @Prop()
     isOpen: boolean;
+    //if there is time
+    // @Prop()
+    // coverImage: string;
+    
     
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
     createdBy: User

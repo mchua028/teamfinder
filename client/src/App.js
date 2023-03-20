@@ -7,6 +7,8 @@ import Signup from './components/pages/Signup';
 import Login from './components/pages/Login';
 import EditProfile from './components/pages/EditProfile';
 import MyProjectsPage from './components/pages/MyProjects/MyProjectsPage';
+import Projects from './components/pages/Projects/Projects';
+import AppliedProjects from './components/pages/AppliedProjects/AppliedProjects';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn ] = useState(false);
@@ -36,8 +38,9 @@ function App() {
                   <Route path='/home' component={(props) => (<Home {...props} isLoggedIn={isLoggedIn} user={user}/>)} />
                   <Route path='/edit-profile' component={(props) => (<EditProfile {...props} isLoggedIn={isLoggedIn} user={user}/>)} />
                   <Route path='/my-projects' component={(props) => (<MyProjectsPage {...props} isLoggedIn={isLoggedIn}/>)} />
-                  {/* <Route path='/home' component={Home}/>
-                  <Route path='/edit-profile' component={EditProfile}/> */}
+                  <Route path='/projects' component={(props) => (<Projects {...props} isLoggedIn={isLoggedIn}/>)} />
+                  <Route path='/applied-projects' component={(props) => (<AppliedProjects {...props} isLoggedIn={isLoggedIn}/>)} />
+                  
             
                   <Route path='/signup' component={(props) =>(<Signup {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUser={setUser}/>)} />
                   <Route path='/' component={(props) => (<Login {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUser={setUser}/>)} />

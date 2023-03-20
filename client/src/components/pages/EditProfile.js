@@ -46,7 +46,7 @@ export default function EditProfile(props) {
                           setProfile(res.data);
                         })
                         .catch((e)=>{
-                          console.log(e);
+                          alert(e);
                         }
                         );
       // ...
@@ -159,7 +159,7 @@ export default function EditProfile(props) {
   ):(
     <>
     {/* // <Stack direction="column" spacing={2} sx={{ paddingLeft:'24px', paddingRight:'24px'}}> */}
-      <Container  >
+      <Container >
         <Header headerText="My Profile"/>
         <Formik
           enableReinitialize
@@ -308,7 +308,6 @@ export default function EditProfile(props) {
             </Grid>
             <Grid item xs={12}>
             <TextInput
-              
               multiline
               rows={4}
               fullWidth
@@ -333,6 +332,7 @@ export default function EditProfile(props) {
             <Grid item xs={12}>
             <AutocompleteInput
               multiple
+              disableCloseOnSelect
               defaultValue={props.values.skills}
               onChange={(event, newValue) => {
                 props.values.skills=newValue;

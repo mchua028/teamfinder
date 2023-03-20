@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import theme from './theme';
 import { Provider } from "react-redux";
+import { ConfirmProvider } from "material-ui-confirm";
 import { BrowserRouter as Router } from "react-router-dom";
 
 
@@ -21,7 +22,9 @@ ReactDOM.render(
         <Provider store={store}>
             <Router>
                 <ThemeProvider theme={theme}>
-                    <App />
+                    <ConfirmProvider>
+                        <App />
+                    </ConfirmProvider>
                 </ThemeProvider>
             </Router>
         </Provider>

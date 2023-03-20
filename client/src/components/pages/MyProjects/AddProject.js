@@ -1,7 +1,9 @@
 import React, { useState,useEffect } from 'react';
 import Header from '../../Header'
 import { LoadingButton } from "@mui/lab";
-import { Box,CircularProgress,Container,Grid,Stack,TextField } from "@mui/material";
+import { Box,Container,Grid,Stack,TextField,Chip } from "@mui/material";
+import { createFilterOptions } from '@mui/material/Autocomplete';
+
 import TextInput from '../../TextInput';
 import AutocompleteInput from '../../AutocompleteInput';
 import * as yup from "yup";
@@ -23,16 +25,18 @@ const validationSchema = yup.object({
     vacancies: yup.number().typeError('Vacancies must be a number').positive('Vacancies must be greater than zero').required("Vacancies is required"),
   });
 
+const filter = createFilterOptions();
+
+
 export default function AddProject(props) {
   // const isLoggedIn=false;
   const isLoggedIn=getTokenFromStorage()? true: false;
   const token=getTokenFromStorage();
-  const userFromStorage=getUserFromStorage();
 
   const skillOptions=["Python","Java","C++","Javascript","HTML","CSS","Unity","R","Web development","Mobile development","Game development","CI/CD","Database design","Data analysis"];
-  const typeOptions=["School Project","Side Project","Potential Business Idea","Start-up"];
-  const categoryOptions=["Web development","Mobile development","Game development","Artificial Intelligence","Machine Learning","Data Analytics","AR/VR","Embedded Software","Computer Hardware"];
-
+  const typeOptions=["School Project","Side Project","Potential Business Idea","Start-up","Others"];
+  const categoryOptions=["Software engineering","Data analytics","Machine learning/AI","Robotics","Game development","IoT","AR/VR","Others"];
+  const keywordOptions=["healthtech","game","mobile","education","fun","ecommerce"];
 
   return !isLoggedIn ? (
     <Redirect
@@ -59,9 +63,9 @@ export default function AddProject(props) {
           }}
           validationSchema= {validationSchema}
           onSubmit= {async (values, { setFieldError }) => {
-            console.log('submitting project..')
+            console.log('creating project...')
             try {
-              const response = await axios.put("http://localhost:3002/api/v1/project/addProject", {
+              const response = await axios.post("http://localhost:3002/api/v1/project/addProject", {
                 projectName: values.projectName,
                 type: values.type,
                 category: values.category,
@@ -70,6 +74,7 @@ export default function AddProject(props) {
                 progressAndFuture: values.progressAndFuture,
                 skills: values.skills,
                 vacancies: values.vacancies,
+                isOpen: true,
                 //createdBy: '',
               },
               {
@@ -93,7 +98,179 @@ export default function AddProject(props) {
           
         >
           <Grid container spacing={2} width='60%' >
+            <Grid item xs={12}>
+            <TextInput
+              required
+              fullWidth
+              label="Project Name"
+              name="projectName"
+              value={props.values.projectName}
+              onChange={props.handleChange}
+              error={
+                props.touched.projectName &&
+                Boolean(props.errors.projectName)
+              }
+              helperText={
+                props.touched.projectName && props.errors.projectName
+              }
+              inputProps={{
+                maxLength: 35,
+              }}
+            />
+            </Grid>
+            <Grid item xs={12}>
+            <AutocompleteInput
+              required
+              onChange={(event, newValue) => {
+                props.values.type=newValue;
+                console.log(props.values.type);
+              }}
+              error={
+                props.touched.type &&
+                Boolean(props.errors.type)
+              }
+              options={typeOptions}
+              getOptionLabel={(option) => option}
+              renderInput={(params) => <TextField {...params} required label="Type of project" />}
+              ListboxProps={{
+                style: { color: "#fff" }
+              }}
+            />
+            </Grid>
 
+            
+            <Grid item xs={12}>
+            <AutocompleteInput
+              required
+              onChange={(event, newValue) => {
+                props.values.category=newValue;
+                console.log(props.values.category);
+              }}
+              error={
+                props.touched.category &&
+                Boolean(props.errors.category)
+              }
+              options={categoryOptions}
+              getOptionLabel={(option) => option}
+              renderInput={(params) => <TextField {...params} required label="Category of project" />}
+              ListboxProps={{
+                style: { color: "#fff" }
+              }}
+            />
+            </Grid>
+            <Grid item xs={12}>
+            <AutocompleteInput
+              multiple
+              options={keywordOptions.map((option) => option)}
+              freeSolo
+              disableCloseOnSelect
+              filterSelectedOptions
+              onChange={(event, newValue) => {
+                props.values.relatedKeywords=newValue;
+                console.log(props.values.relatedKeywords);
+              }}
+              error={
+                props.touched.relatedKeywords &&
+                Boolean(props.errors.relatedKeywords)
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Related domain keywords"
+                />
+              )}
+              ListboxProps={{
+                style: { color: "#fff" }
+              }}
+            />
+            </Grid>
+            <Grid item xs={12}>
+            <TextInput
+              multiline
+              rows={4}
+              required
+              fullWidth
+              label="Brief Description"
+              name="briefDescription"
+              value={props.values.briefDescription}
+              onChange={props.handleChange}
+              error={
+                props.touched.briefDescription &&
+                Boolean(props.errors.briefDescription)
+              }
+              helperText={
+                props.touched.briefDescription && props.errors.briefDescription
+              }
+              inputProps={{
+                maxLength: 500,
+                style: { color: "#fff" }
+              }}
+            />
+            </Grid>
+            <Grid item xs={12}>
+            <TextInput
+              multiline
+              rows={6}
+              required
+              fullWidth
+              label="Progress and future plans"
+              name="progressAndFuture"
+              value={props.values.progressAndFuture}
+              onChange={props.handleChange}
+              error={
+                props.touched.progressAndFuture &&
+                Boolean(props.errors.progressAndFuture)
+              }
+              helperText={
+                props.touched.progressAndFuture && props.errors.progressAndFuture
+              }
+              inputProps={{
+                maxLength: 500,
+                style: { color: "#fff" }
+              }}
+            />
+            </Grid>
+            <Grid item xs={12}>
+            <AutocompleteInput
+              multiple
+              disableCloseOnSelect
+              defaultValue={props.values.skills}
+              onChange={(event, newValue) => {
+                props.values.skills=newValue;
+                console.log(props.values.skills);
+              }}
+              error={
+                props.touched.skills &&
+                Boolean(props.errors.skills)
+              }
+              options={skillOptions}
+              getOptionLabel={(option) => option}
+              filterSelectedOptions
+              renderInput={(params) => <TextField {...params} label="Skills" />}
+              ListboxProps={{
+                style: { color: "#fff" }
+              }}
+            />
+            </Grid>
+            <Grid item xs={12}>
+            <TextInput
+              required
+              fullWidth
+              label="Vacancies"
+              name="vacancies"
+              value={props.values.vacancies}
+              onChange={props.handleChange}
+              error={
+                props.touched.vacancies &&
+                Boolean(props.errors.vacancies)
+              }
+              helperText={
+                props.touched.vacancies && props.errors.vacancies
+              }
+              inputProps={{ maxLength: 3 }}
+              
+            />
+            </Grid>
           </Grid>
           <LoadingButton
               type="submit"

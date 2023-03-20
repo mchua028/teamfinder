@@ -2,7 +2,33 @@ import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
 let theme = createTheme({
     typography: {
-      fontFamily: "'Saira', sans-serif",
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+      title1: {
+        fontSize: 18,
+        // fontWeight: 600,
+      },
+      subtitle1: {
+        fontSize: 14.5,
+        fontWeight: 600,
+      },
+      subtitle2: {
+        fontSize: 12,
+      },
+      subtitle3: {
+        fontSize: 11,
+      }
+
     },
     components: {
       MuiCssBaseline: {
@@ -70,13 +96,22 @@ let theme = createTheme({
         red: {
             main: '#FF0000',
             contrastText: '#fff',
+            light: '#f2d5d5',
+            dark: '#ff0000'
         },
         yellow: {
             main: '#ECD679',
             contrastText: '#fff',
         },
         green: {
-            main: '#65FF87',
+            main: '#9FE2BF',
+            contrastText: '#000',
+            light: '#EBFFF0',
+            dark: '#217A37',
+            bright: '#65FF87'
+        },
+        turquoise:{
+            main: '#40E0D0',
             contrastText: '#000',
         },
         blue: {
@@ -84,12 +119,15 @@ let theme = createTheme({
             contrastText: '#fff',
         },
         orange: {
-            main: '#DB7D58',
+            main: '#ffac1c',
             contrastText: '#fff',
+            light: '#fff2db',
+            dark: '#ff8c00',
         },
         lightGray: {
             main: '#D9D9D9',
-            contrastText: '#fff',
+            contrastText: '#000',
+            translucent: '#ffffff4d'
         },
         gray: {
             main: '#343333',

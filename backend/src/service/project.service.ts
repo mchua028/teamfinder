@@ -20,12 +20,20 @@ export class ProjectService {
     }
 
     async readMyProjects(id:string): Promise<any> {
-       
+        console.log('reading my projects...')
         return await this.projectModel.find({createdBy:id}).exec();
-    } 
+    }
 
     async readAllProjects(): Promise<any> {
-        const projectData = await this.projectModel.find().exec();
+        const projectData = await this.projectModel.find({isOpen:true,vacancies:{ $gt: 0 }}).populate({path:"createdBy",select:["name"]}).exec();
+        // if (!projectData || projectData.length == 0) {
+        //     throw new NotFoundException('Projects data not found!');
+        // }
+        return projectData;
+    }
+
+    async readProjectsByCategory(category:string): Promise<any> {
+        const projectData = await this.projectModel.find({category:category,isOpen:true,vacancies:{ $gt: 0 }}).populate({path:"createdBy",select:["name"]}).exec();
         // if (!projectData || projectData.length == 0) {
         //     throw new NotFoundException('Projects data not found!');
         // }
@@ -34,31 +42,12 @@ export class ProjectService {
 
     async readOneProject(id: string, response: Response, request: Request) {
         try {
-            const data = await this.projectModel.findOne({ _id: id })
+            const data = await this.projectModel.findById(id).populate({path:"createdBy",select:["name"]}).exec();
             if (!data) {
                 throw new NotFoundException(null, 'ProjectNotFound')
             }
+            console.log('retrieved project:',data);
             return data;
-            // const { range } = request.headers;
-            // if (range) {
-            //     const { video } = data;
-            //     const videoPath = statSync(join(process.cwd(), `./public/${video}`))
-            //     const CHUNK_SIZE = 1 * 1e6;
-            //     const start = Number(range.replace(/\D/g, ''));
-            //     const end = Math.min(start + CHUNK_SIZE, videoPath.size - 1);
-            //     const videoLength = end - start + 1;
-            //     response.status(206)
-            //     response.header({
-            //         'Content-Range': `bytes ${start}-${end}/${videoPath.size}`,
-            //         'Accept-Ranges': 'bytes',
-            //         'Content-length': videoLength,
-            //         'Content-Type': 'video/mp4',
-            //     })
-            //     const vidoeStream = createReadStream(join(process.cwd(), `./public/${video}`), { start, end });
-            //     vidoeStream.pipe(response);
-            // } else {
-            //     throw new NotFoundException(null, 'range not found')
-            // }
 
         } catch (e) {
             console.error(e)

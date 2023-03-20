@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Header from '../../Header';
 import StyledTabs from '../../StyledTabs';
 import StyledTab from '../../StyledTab';
-import { Box,CircularProgress,Container,Tab,Tabs,Typography,Button} from "@mui/material";
+import { Box,CircularProgress,Container,Typography,Button,Stack,Chip,Link as MuiLink} from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -33,7 +33,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -64,10 +64,32 @@ export default function MyProjects(props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    
+  const [projects,setProjects]=useState();
 
-    //TODO: get projects axios.get
-      
-      const rows = [];
+  useEffect(() => {
+     function fetchData() {
+      // You can await here
+      const response = axios.get("http://localhost:3002/api/v1/project/myprojects",
+                        {
+                          headers: ({
+                              Authorization: 'Bearer ' + token
+                          })
+                        })
+                        .then((res)=>{
+                          console.log('res.data:',res.data);
+                          setProjects(res.data);
+                        })
+                        .catch((e)=>{
+                          alert(e);
+                        }
+                        );
+      // ...
+    }
+    fetchData();
+  }, []);
+
+  console.log('projects after useeffect:',projects);
     
     return !isLoggedIn ? (
         <Redirect
@@ -75,7 +97,11 @@ export default function MyProjects(props) {
             pathname: "/",
           }}
         />
-      ) : (
+      ) : ( !projects? (
+        <Box sx={{textAlign:'center'}}>
+              <CircularProgress sx={{color:"primary.contrastText"}}/>
+        </Box>
+      ):(
         <Container>
             <Header headerText="My Projects"/>
             <Button
@@ -96,35 +122,51 @@ export default function MyProjects(props) {
             >
                 + Add Project
             </Button>
-            <Box sx={{ width: '100%', borderRadius: '16px',backgroundColor:'gray.main',marginTop:'20px' }}>
+            <Box sx={{ width: '100%', borderRadius: '16px',backgroundColor:'gray.main',marginTop:'20px',padding:1 }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'secondary.main' }}>
                     <StyledTabs value={value} onChange={handleChange}>
                     <StyledTab label="Ongoing" {...a11yProps(0)} />
                     <StyledTab label="Closed" {...a11yProps(1)} />
                     </StyledTabs>
                 </Box>
-                <TabPanel value={value} index={0}>
+                <TabPanel value={value} index={0} sx={{padding:0}}>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650,backgroundColor:'transparent'}}>
                         <TableHead>
                         <TableRow>
-                            <TableCell>Project</TableCell>
-                            <TableCell align="right">Vacancies filled</TableCell>
-                            <TableCell align="right">Date created</TableCell>
-                            <TableCell align="right">Actions</TableCell>
+                            <TableCell sx={{color:'#fff'}}>Project</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>Vacancies filled</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>Date created</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>Actions</TableCell>
                         </TableRow>
                         </TableHead>
                         <TableBody>
-                        {rows.map((row) => (
+                        {projects.map((row) => (
                             <TableRow
                             key={row.projectName}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                            <TableCell component="th" scope="row">
+                            <TableCell component="th" scope="row" >
+                              {/* <Link>{row.projectName}</Link> */}
+                              {/* <MuiLink underline="hover" color="turquoise.main" variant="subtitle1">{row.projectName}</MuiLink> */}
+                              <Typography variant="subtitle1" sx={{color:'turquoise.main'}} component={Link} to= {`/my-projects/${row._id}`} 
+                              // "/my-projects"
+                              >
                                 {row.projectName}
+                              </Typography>
+                              <Typography variant="subtitle2" sx={{color:'#fff'}}>
+                                {row.category}
+                              </Typography>
+                              <Stack direction="row" spacing={1} marginTop={1}>
+                                {row.relatedKeywords.map((keyword)=>(
+                                  <Chip label={keyword} color="lightGray" size="small" sx={{color:"gray.main"}}/>
+                                ))}
+                              </Stack>
+                                
+                                
                             </TableCell>
-                            <TableCell align="right">{row.vacanciesFilled}</TableCell>
-                            <TableCell align="right">{row.dateCreated}</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>{row.vacancies}</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>{row.createdAt}</TableCell>
                             <TableCell align="right"><MoreHorizIcon sx={{color: '#fff'}}/></TableCell>
                             </TableRow>
                         ))}
@@ -139,4 +181,5 @@ export default function MyProjects(props) {
         </Container>
             
       )
+    )
 }
