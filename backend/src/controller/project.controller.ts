@@ -8,10 +8,6 @@ export class ProjectController {
     constructor(private readonly projectService: ProjectService){}
 
     @Post('/addProject')
-    // @UseInterceptors(FileFieldsInterceptor([
-    //     { name: 'cover', maxCount: 1 },
-    // ]))
-    //passed through middleware
     async createProject(@Res() response, @Req() request, @Body() project: Project) {
         console.log('request.user',request.user);
         const requestBody = {projectName: project.projectName, type:project.type,category:project.category,
@@ -28,21 +24,17 @@ export class ProjectController {
         return response.status(HttpStatus.OK).json(projects);
 
     }
-
     @Get('/byCategory/:category')
     async readByCategory(@Param('category') category, @Res() response, @Req() request): Promise<Object> {
         const projects = await this.projectService.readProjectsByCategory(category);
         return response.status(HttpStatus.OK).json(projects);
-
     }
-
     @Get('/myprojects')
     async readMyProjects(@Res() response, @Req() request): Promise<Object> {
         console.log('at myprojects path');
         const myProjects = await this.projectService.readMyProjects(request.user);
         return response.status(HttpStatus.OK).json(myProjects);
     }
-    
     @Get('/byId/:id')
     async readOne(@Param('id') id, @Res() response, @Req() request): Promise<Object> {
         const myProject=await this.projectService.readOneProject(id, response, request);
@@ -53,7 +45,6 @@ export class ProjectController {
         const updatedProject = await this.projectService.update(id, project);
         return response.status(HttpStatus.OK).json(updatedProject)
     }
-    //handle exceptions?
     @Delete('/:id')
     async delete(@Res() response, @Param('id') id) {
         await this.projectService.delete(id);

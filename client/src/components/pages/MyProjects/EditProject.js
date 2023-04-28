@@ -1,44 +1,73 @@
 import React, { useState,useEffect } from 'react';
 import Header from '../../Header'
 import { LoadingButton } from "@mui/lab";
-import { Box,Container,Grid,Stack,TextField,Chip } from "@mui/material";
-import { createFilterOptions } from '@mui/material/Autocomplete';
-
+import { Box,CircularProgress,Container,Grid,Stack,TextField } from "@mui/material";
 import TextInput from '../../TextInput';
 import AutocompleteInput from '../../AutocompleteInput';
 import * as yup from "yup";
 import { Formik } from "formik";
-import { Redirect,useHistory } from "react-router-dom";
+import { Redirect,useHistory,useParams } from "react-router-dom";
 import axios from 'axios';
 
-import {getUserFromStorage} from '../../utils/user-localstorage.util';
 import {getTokenFromStorage} from '../../utils/user-localstorage.util';
 
 const validationSchema = yup.object({
-    projectName: yup.string().required("Project Name is required"),
-    type: yup.string().required("Type is required"),
-    category: yup.string().required("Category is required"),
-    relatedKeywords: yup.array(),
-    briefDescription: yup.string().required("Brief Description is required"),
-    progressAndFuture: yup.string(),
-    skills: yup.array(),
-    vacancies: yup.number().typeError('Vacancies must be a number').positive('Vacancies must be greater than zero').required("Vacancies is required"),
+    age: yup.number().typeError('Age must be a number').positive('Age must be greater than zero').required("Age is required"),
+    occupation: yup.string().required("Occupation is required"),
+    schOrEmployer: yup.string().required("School/Employer is required"),
+    purpose: yup.string(),
+    skills: yup.array()
   });
 
-const filter = createFilterOptions();
+export default function EditProject(props) {
+  const history= useHistory();
 
-
-export default function AddProject(props) {
-  // const isLoggedIn=false;
   const isLoggedIn=getTokenFromStorage()? true: false;
   const token=getTokenFromStorage();
-
-  const history=useHistory();
 
   const skillOptions=["Python","Java","C++","Javascript","HTML","CSS","Unity","R","Web development","Mobile development","Game development","CI/CD","Database design","Data analysis"];
   const typeOptions=["School Project","Side Project","Potential Business Idea","Start-up","Others"];
   const categoryOptions=["Software engineering","Data analytics","Machine learning/AI","Robotics","Game development","IoT","AR/VR","Others"];
   const keywordOptions=["healthtech","game","mobile","education","fun","ecommerce"];
+
+  const [project,setProject]=useState();
+
+  const { projectId } = useParams();
+
+  console.log('projectid',projectId);
+
+  useEffect(() => {
+     function fetchData() {
+      // You can await here
+      axios.get("http://localhost:3002/api/v1/project/byId/"+projectId,
+                        {
+                          headers: ({
+                              Authorization: 'Bearer ' + token
+                          })
+                        })
+                        .then((res)=>{
+                          console.log('res.data:',res.data);
+                          setProject(res.data);
+                        })
+                        .catch((e)=>{
+                            console.log(e.code);
+                            if(e.code==='ERR_BAD_REQUEST'){
+                              localStorage.clear();
+                              history.push('/');
+                              window.location.reload();
+                            }
+                            else{
+                              alert('An unspecified error occured.');
+                            }
+                        }
+                        );
+      // ...
+    }
+    fetchData();
+  }, []);
+
+
+  console.log('project after useeffect:',project);
 
   return !isLoggedIn ? (
     <Redirect
@@ -46,28 +75,31 @@ export default function AddProject(props) {
         pathname: "/",
       }}
     />
-  ) : (
+  ) : ( !project? (
+    <Box sx={{textAlign:'center'}}>
+          <CircularProgress sx={{color:"primary.contrastText"}}/>
+    </Box>
+  ):(
     <>
-    {/* // <Stack direction="column" spacing={2} sx={{ paddingLeft:'24px', paddingRight:'24px'}}> */}
-      <Container  >
-        <Header headerText="New Project"/>
+      <Container >
+        <Header headerText={project.projectName}/>
         <Formik
           enableReinitialize
           initialValues= {{
-            projectName: '',
-            type: '',
-            category: '',
-            relatedKeywords: [],
-            briefDescription: '',
-            progressAndFuture: '',
-            skills: [],
-            vacancies: '',
+            projectName: project.projectName,
+            type: project.type,
+            category: project.category,
+            relatedKeywords: project.relatedKeywords,
+            briefDescription: project.briefDescription,
+            progressAndFuture: project.progressAndFuture,
+            skills: project.skills,
+            vacancies: project.vacancies,
           }}
           validationSchema= {validationSchema}
           onSubmit= {async (values, { setFieldError }) => {
             console.log('creating project...')
             try {
-              const response = await axios.post("http://localhost:3002/api/v1/project/addProject", {
+              const response = await axios.put("http://localhost:3002/api/v1/project/"+projectId, {
                 projectName: values.projectName,
                 type: values.type,
                 category: values.category,
@@ -83,16 +115,17 @@ export default function AddProject(props) {
                     Authorization: 'Bearer ' + token
                 })
               });
-              alert("Project created successfully!");
+      
+              alert("Project saved successfully!");
             } catch (e) {
                 console.log(e.code);
                 if(e.code==='ERR_BAD_REQUEST'){
-                  localStorage.clear();
-                  history.push('/');
-                  window.location.reload();
+                localStorage.clear();
+                history.push('/');
+                window.location.reload();
                 }
                 else{
-                  alert('An unspecified error occured.');
+                alert('An unspecified error occured.');
                 }
             }}
           }
@@ -293,7 +326,7 @@ export default function AddProject(props) {
               }}
               loading={props.isSubmitting}
             >
-            Create Project
+            Save Project
           </LoadingButton>
         </Box>
         )}
@@ -301,6 +334,6 @@ export default function AddProject(props) {
        
       </Container>
     </>
-  
+  )
   );
 }

@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import { Button, Grid, Stack, Container, Typography, TextField,Autocomplete,styled, Avatar, ButtonBase, TableRow, TableCell, TableHead,TableBody,TableContainer,Paper,Table,Box,IconButton,Chip,CircularProgress } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import SearchIcon from '@mui/icons-material/Search';
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useRouteMatch,useHistory } from "react-router-dom";
 import { useConfirm } from "material-ui-confirm";
 import AppliedProjectRow from './appliedProjectRow';
 import TextInput from '../../TextInput';
@@ -17,6 +17,7 @@ import { getTokenFromStorage } from '../../utils/user-localstorage.util';
 export default function AppliedProjectsList({ category }) {
     const token=getTokenFromStorage();
     const confirm = useConfirm();
+    const history= useHistory();
     const isOffered=(category=='OFFERED')? true:false;
 
     const [projectDetails,setProjectDetails]=useState();
@@ -40,7 +41,15 @@ export default function AppliedProjectsList({ category }) {
                             setProjects(res.data.filter((project)=>project.status==category));
                           })
                           .catch((e)=>{
-                            alert(e);
+                            console.log(e.code);
+                            if(e.code==='ERR_BAD_REQUEST'){
+                            localStorage.clear();
+                            history.push('/');
+                            window.location.reload();
+                            }
+                            else{
+                            alert('An unspecified error occured.');
+                            }
                           }
                           );
       

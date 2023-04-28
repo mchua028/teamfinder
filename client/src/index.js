@@ -2,6 +2,7 @@ import React from 'react';
 import axios from "axios";
 import ReactDOM from 'react-dom';
 import App from './App';
+import FloatingChatBox from './components/FloatingChatBox';
 import theme from './theme';
 import { Provider } from "react-redux";
 import { ConfirmProvider } from "material-ui-confirm";
@@ -24,6 +25,7 @@ ReactDOM.render(
                 <ThemeProvider theme={theme}>
                     <ConfirmProvider>
                         <App />
+                        <FloatingChatBox />
                     </ConfirmProvider>
                 </ThemeProvider>
             </Router>

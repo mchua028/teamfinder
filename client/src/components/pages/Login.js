@@ -37,19 +37,15 @@ function Login(props) {
             email: values.email,
             password: values.password
           };
-          console.log(formData.password);
           const { data } = await axios.post("http://localhost:3002/api/v1/user/login", formData);
-          // if (data.status === parseInt('201')||data.status === parseInt('200')) {
           if (data.status === parseInt('401')) {
             setErrorMessage(data.response)
           } else {
-            console.log("login successful");
             localStorage.setItem('token', data.token);
             localStorage.setItem('user',[data.name,formData.email]);
             setIsLoggedIn(true);
             setUser([data.name,formData.email]);
-            console.log("going to edit-profile");
-            history.push("/edit-profile");
+            history.push("/projects");
           }
           // } else {
           //   setErrorMessage(data.response)
@@ -70,7 +66,7 @@ function Login(props) {
   return isLoggedIn ? (
     <Redirect
       to={{
-        pathname: "/home",
+        pathname: "/projects",
       }}
     />
   ) : (

@@ -221,16 +221,10 @@ function NavBar(props) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
                 >
-                {/* {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                ))} */}
                     <Typography align='center' > Hi, {userName} </Typography>
                     <MenuItem 
                     component={Link}
                     to="/edit-profile"
-                        // onClick={navigateToProfile}
                     >
                         <ListItemIcon>
                             <EditIcon /> 

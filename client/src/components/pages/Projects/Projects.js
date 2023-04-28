@@ -24,6 +24,8 @@ import axios from 'axios';
 import {getUserFromStorage} from '../../utils/user-localstorage.util';
 import {getTokenFromStorage} from '../../utils/user-localstorage.util';
 
+import FloatingChatBox from '../../FloatingChatBox';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -58,7 +60,7 @@ function a11yProps(index) {
   };
 }
 
-export default function Projects(props) {
+export default function Projects() {
     const isLoggedIn=getTokenFromStorage()? true: false;
     const token=getTokenFromStorage();
 
@@ -84,10 +86,6 @@ export default function Projects(props) {
             pathname: "/",
           }}
         />
-    //   ) : ( (!projects)? (
-    //     <Box sx={{textAlign:'center'}}>
-    //           <CircularProgress sx={{color:"primary.contrastText"}}/>
-    //     </Box>
       ):(
         <Container>
             <Header headerText='Available Projects'/>
@@ -142,7 +140,6 @@ export default function Projects(props) {
             </Stack>
             
         </Container>
-            
       )
     
 }

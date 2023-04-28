@@ -14,7 +14,6 @@ export class ApplicationController {
     constructor(private readonly applicationService: ApplicationService){}
 
     @Post('/addApplication')
-    //passed through middleware
     async createApplication(@Res() response, @Req() request, @Body() application: Application) {
         console.log('request.user',request.user);
         const requestBody = {projectId: application.projectId, status: application.status, createdBy: request.user };
@@ -28,19 +27,16 @@ export class ApplicationController {
         const myApplications = await this.applicationService.readProjectApplications(projectId);
         return response.status(HttpStatus.OK).json(myApplications);
     }
-
     @Get('/user')
     async readUserApplications(@Res() response, @Req() request): Promise<Object> {
         const myApplication=await this.applicationService.readUserApplications(request.user);
         return response.status(HttpStatus.OK).json(myApplication);
     }
-
     @Get('/:id')
     async readOne(@Param('id') id, @Res() response, @Req() request): Promise<Object> {
         const myApplication=await this.applicationService.readOneApplication(id);
         return response.status(HttpStatus.OK).json(myApplication);
     }
-
     @Put('/:id')
     async update(@Res() response, @Param('id') id, @Body() application: Application) {
         

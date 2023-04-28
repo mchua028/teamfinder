@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Grid, Stack, Typography, styled, Avatar, ButtonBase, TableRow, TableCell, Box,IconButton,Chip } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { Link, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useConfirm } from "material-ui-confirm";
 
 import axios from 'axios';
@@ -50,6 +50,8 @@ export default function AppliedProjectRow({ application, isOffered, onSelect }) 
     const token = getTokenFromStorage();
     const confirm = useConfirm();
 
+    const history= useHistory();
+
     console.log(application);
 
     const { projectId,status,createdBy, createdAt,updatedAt } = application;
@@ -84,7 +86,15 @@ export default function AppliedProjectRow({ application, isOffered, onSelect }) 
               alert("Successfully accepted offer for: "+application.projectId.projectName+"!");
             })
             .catch((e) => {
-              alert(e);
+              console.log(e.code);
+              if(e.code==='ERR_BAD_REQUEST'){
+                localStorage.clear();
+                history.push('/');
+                window.location.reload();
+              }
+              else{
+                alert('An unspecified error occured.');
+              }
             }
             );
         })
@@ -115,7 +125,15 @@ export default function AppliedProjectRow({ application, isOffered, onSelect }) 
               alert("Successfully rejected offer for: "+application.projectId.projectName+"!");
             })
             .catch((e) => {
-              alert(e);
+              console.log(e.code);
+              if(e.code==='ERR_BAD_REQUEST'){
+                localStorage.clear();
+                history.push('/');
+                window.location.reload();
+              }
+              else{
+                alert('An unspecified error occured.');
+              }
             }
             );
         })

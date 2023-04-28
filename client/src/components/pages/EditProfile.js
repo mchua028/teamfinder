@@ -20,7 +20,7 @@ const validationSchema = yup.object({
     skills: yup.array()
   });
 
-export default function EditProfile(props) {
+export default function EditProfile() {
   const history= useHistory();
   // const isLoggedIn=false;
   const isLoggedIn=getTokenFromStorage()? true: false;
@@ -47,7 +47,8 @@ export default function EditProfile(props) {
                           setProfile(res.data);
                         })
                         .catch((e)=>{
-                          if(e.code===401){
+                          console.log(e.code);
+                          if(e.code==='ERR_BAD_REQUEST'){
                             localStorage.clear();
                             history.push('/');
                             window.location.reload();
@@ -197,18 +198,15 @@ export default function EditProfile(props) {
       
               alert("Profile saved successfully!");
             } catch (e) {
-              // if (
-              //   e?.response?.data?.message &&
-              //   typeof e?.response?.data?.message === "object"
-              // ) {
-              //   Object.entries(e.response.data.message).forEach(
-              //     ([property, value]) => {
-              //       setFieldError(property, value);
-              //     }
-              //   );
-              // } else {
-                alert("An unspecified error has occurred. Please try again.");
-              // }
+                console.log(e.code);
+                if(e.code==='ERR_BAD_REQUEST'){
+                  localStorage.clear();
+                  history.push('/');
+                  window.location.reload();
+                }
+                else{
+                  alert('An unspecified error occured.');
+                }
             }}
           }
       >

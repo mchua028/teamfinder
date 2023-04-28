@@ -19,7 +19,11 @@ export class ApplicationService {
     async createApplication(application: Object): Promise<Application> {
         const newApplication = new this.applicationModel(application);
         const data = await this.applicationModel.find({projectId:newApplication.projectId,createdBy:newApplication.createdBy}).exec();
-        if(data){
+        const projectOwner=(await this.projectModel.findById(newApplication.projectId)).createdBy;
+        if(newApplication.createdBy.toString()===projectOwner.toString()){
+            throw new Error('Cannot apply to own projects');
+        }
+        else if(data.length>0){
             throw new Error('Application already exists');
         }
         else{

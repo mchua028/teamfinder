@@ -18,7 +18,7 @@ import Paper from '@mui/material/Paper';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Avatar from '@mui/material/Avatar';
 
-import { Redirect,Link,useParams } from "react-router-dom";
+import { Redirect,Link,useParams,useHistory } from "react-router-dom";
 import axios from 'axios';
 
 import {getUserFromStorage} from '../../utils/user-localstorage.util';
@@ -61,7 +61,7 @@ function a11yProps(index) {
 export default function ProjectDetails(props) {
     const isLoggedIn=getTokenFromStorage()? true: false;
     const token=getTokenFromStorage();
-    const userFromStorage=getUserFromStorage();
+    const history= useHistory();
 
     const [value, setValue] = React.useState(0);
 
@@ -96,7 +96,15 @@ export default function ProjectDetails(props) {
                           setProject(res.data);
                         })
                         .catch((e)=>{
-                          alert(e);
+                            console.log(e.code);
+                            if(e.code==='ERR_BAD_REQUEST'){
+                              localStorage.clear();
+                              history.push('/');
+                              window.location.reload();
+                            }
+                            else{
+                              alert('An unspecified error occured.');
+                            }
                         }
                         );
         axios.get("http://localhost:3002/api/v1/application/project/"+projectId,
@@ -110,7 +118,15 @@ export default function ProjectDetails(props) {
                           setApplications(res.data);
                         })
                         .catch((e)=>{
-                          alert(e);
+                            console.log(e.code);
+                            if(e.code==='ERR_BAD_REQUEST'){
+                              localStorage.clear();
+                              history.push('/');
+                              window.location.reload();
+                            }
+                            else{
+                              alert('An unspecified error occured.');
+                            }
                         }
                         );
     }

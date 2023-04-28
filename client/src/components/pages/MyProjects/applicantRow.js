@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Grid, Stack, Typography, styled, Avatar, ButtonBase, TableRow, TableCell, Box } from "@mui/material";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useRouteMatch,useHistory } from "react-router-dom";
 import { useConfirm } from "material-ui-confirm";
 
 import axios from 'axios';
@@ -71,6 +71,7 @@ export default function ApplicantRow({ applicant, projectName, isNew, onSelect }
 
   const { url } = useRouteMatch();
   const confirm = useConfirm();
+  const history= useHistory();
 
   const isVisible = isNew ? 'visible' : 'hidden';
 
@@ -98,7 +99,15 @@ export default function ApplicantRow({ applicant, projectName, isNew, onSelect }
             alert("Successfully made an offer to "+applicant.createdBy.name+" for: "+projectName+"!");
           })
           .catch((e) => {
-            alert(e);
+            console.log(e.code);
+            if(e.code==='ERR_BAD_REQUEST'){
+              localStorage.clear();
+              history.push('/');
+              window.location.reload();
+            }
+            else{
+              alert('An unspecified error occured.');
+            }
           }
           );
       })
@@ -129,7 +138,15 @@ export default function ApplicantRow({ applicant, projectName, isNew, onSelect }
             alert("Successfully rejected application by "+applicant.createdBy.name+" for: "+projectName+"!");
           })
           .catch((e) => {
-            alert(e);
+            console.log(e.code);
+            if(e.code==='ERR_BAD_REQUEST'){
+              localStorage.clear();
+              history.push('/');
+              window.location.reload();
+            }
+            else{
+              alert('An unspecified error occured.');
+            }
           }
           );
       })

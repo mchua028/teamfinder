@@ -49,7 +49,7 @@ function a11yProps(index) {
   };
 }
 
-export default function AppliedProjects(props) {
+export default function AppliedProjects() {
     const isLoggedIn=getTokenFromStorage()? true: false;
     const token=getTokenFromStorage();
 

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Header from '../../Header';
 import StyledTabs from '../../StyledTabs';
 import StyledTab from '../../StyledTab';
-import { Box,CircularProgress,Container,Typography,Button,Stack,Chip,Link as MuiLink} from "@mui/material";
+import { Box,CircularProgress,Container,Typography,Button,Stack,Chip,Link as MuiLink,IconButton,} from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,8 +13,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import EditIcon from '@mui/icons-material/Edit';
+import Tooltip from '@mui/material/Tooltip';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import CloseIcon from '@mui/icons-material/Close';
+import { useTheme } from '@mui/material/styles';
 
-import { Redirect,Link } from "react-router-dom";
+import { Redirect,Link,useHistory } from "react-router-dom";
 import axios from 'axios';
 
 import {getUserFromStorage} from '../../utils/user-localstorage.util';
@@ -58,13 +65,22 @@ export default function MyProjects(props) {
     const isLoggedIn=getTokenFromStorage()? true: false;
     const token=getTokenFromStorage();
     const userFromStorage=getUserFromStorage();
+    const history= useHistory();
 
     const [value, setValue] = React.useState(0);
+    
+    const themePalette = useTheme().palette;
+    const [anchorElMore, setAnchorElMore] = React.useState(null);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    
+    const handleOpenMoreOptions = (event) => {
+      setAnchorElMore(event.currentTarget);
+    };
+    const handleCloseMoreOptions = () => {
+      setAnchorElMore(null);
+    };
   const [projects,setProjects]=useState();
 
   useEffect(() => {
@@ -79,9 +95,18 @@ export default function MyProjects(props) {
                         .then((res)=>{
                           console.log('res.data:',res.data);
                           setProjects(res.data);
+                          
                         })
                         .catch((e)=>{
-                          alert(e);
+                          console.log(e.code);
+                          if(e.code==='ERR_BAD_REQUEST'){
+                            localStorage.clear();
+                            history.push('/');
+                            window.location.reload();
+                          }
+                          else{
+                            alert('An unspecified error occured.');
+                          }
                         }
                         );
       // ...
@@ -130,7 +155,7 @@ export default function MyProjects(props) {
                     </StyledTabs>
                 </Box>
                 <TabPanel value={value} index={0} sx={{padding:0}}>
-                <TableContainer component={Paper}>
+                    <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650,backgroundColor:'transparent'}}>
                         <TableHead>
                         <TableRow>
@@ -141,7 +166,7 @@ export default function MyProjects(props) {
                         </TableRow>
                         </TableHead>
                         <TableBody>
-                        {projects.map((row) => (
+                        {projects.filter(project=>project.isOpen==true).map((row) => (
                             <TableRow
                             key={row.projectName}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -166,16 +191,108 @@ export default function MyProjects(props) {
                                 
                             </TableCell>
                             <TableCell align="right" sx={{color:'#fff'}}>{row.vacancies}</TableCell>
-                            <TableCell align="right" sx={{color:'#fff'}}>{row.createdAt}</TableCell>
-                            <TableCell align="right"><MoreHorizIcon sx={{color: '#fff'}}/></TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>{(new Date(row.createdAt)).toString().split(':')[0]+':'+(new Date(row.createdAt)).toString().split(':')[1]}</TableCell>
+                            <TableCell align="right">
+                              <Tooltip title="More">
+                                <IconButton size="small" onClick={handleOpenMoreOptions}>
+                                  <MoreHorizIcon sx={{color: '#fff'}}/>
+                                </IconButton>
+                              </Tooltip>
+                              <Menu
+                              sx={{ mt: '45px', 
+                                  "& .MuiPaper-root": {
+                                  backgroundColor: themePalette.secondary.main
+                                }  
+                              }}
+                              anchorEl={anchorElMore}
+                              anchorOrigin={{
+                                  vertical: 'top',
+                                  horizontal: 'right',
+                              }}
+                              keepMounted
+                              transformOrigin={{
+                                  vertical: 'top',
+                                  horizontal: 'right',
+                              }}
+                              open={Boolean(anchorElMore)}
+                              onClose={handleCloseMoreOptions}
+                              >
+                                  
+                                  <MenuItem 
+                                  component={Link} 
+                                  to= {`/my-projects/${row._id}/edit`}
+                                  >
+                                      <ListItemIcon>
+                                          <EditIcon /> 
+                                      </ListItemIcon>
+                                      
+                                      Edit
+                                  </MenuItem>
+                                  <MenuItem
+                                  onClick={handleCloseMoreOptions}
+                                  >
+                                      <ListItemIcon>
+                                          <CloseIcon fontSize="small" />
+                                      </ListItemIcon>
+                                      Close
+                                  </MenuItem>
+                              </Menu>
+                            </TableCell>
                             </TableRow>
+                            
                         ))}
                         </TableBody>
                     </Table>
                     </TableContainer>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    closed
+                    <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650,backgroundColor:'transparent'}}>
+                        <TableHead>
+                        <TableRow>
+                            <TableCell sx={{color:'#fff'}}>Project</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>Vacancies filled</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>Date created</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>Actions</TableCell>
+                        </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        {projects.filter(project=>project.isOpen==false).map((row) => (
+                            <TableRow
+                            key={row.projectName}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                            <TableCell component="th" scope="row" >
+                              {/* <Link>{row.projectName}</Link> */}
+                              {/* <MuiLink underline="hover" color="turquoise.main" variant="subtitle1">{row.projectName}</MuiLink> */}
+                              <Typography variant="subtitle1" sx={{color:'turquoise.main'}} component={Link} to= {`/my-projects/${row._id}`} 
+                              // "/my-projects"
+                              >
+                                {row.projectName}
+                              </Typography>
+                              <Typography variant="subtitle2" sx={{color:'#fff'}}>
+                                {row.category}
+                              </Typography>
+                              <Stack direction="row" spacing={1} marginTop={1}>
+                                {row.relatedKeywords.map((keyword)=>(
+                                  <Chip label={keyword} color="lightGray" size="small" sx={{color:"gray.main"}}/>
+                                ))}
+                              </Stack>
+                                
+                                
+                            </TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>{row.vacancies}</TableCell>
+                            <TableCell align="right" sx={{color:'#fff'}}>{(new Date(row.createdAt)).toString().split(':')[0]+':'+(new Date(row.createdAt)).toString().split(':')[1]}</TableCell>
+                            <TableCell align="right">
+                              {/* <IconButton onClick={handleMore}>
+                                <MoreHorizIcon sx={{color: '#fff'}}/>
+                              </IconButton> */}
+                            </TableCell>
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
+                    </TableContainer>
                 </TabPanel>
             </Box>
         </Container>

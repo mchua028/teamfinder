@@ -16,6 +16,7 @@
     "axios": "^1.2.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "firebase": "^9.15.0",
+    "floating-chat": "^1.0.4",
     "formik": "^2.2.9",
     "gapi-script": "^1.2.0",
     "material-ui-confirm": "^3.0.8",

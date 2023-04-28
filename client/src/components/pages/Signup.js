@@ -81,7 +81,7 @@ export default function Signup(props) {
   return isLoggedIn ? (
     <Redirect
       to={{
-        pathname: "/home",
+        pathname: "/projects",
       }}
     />
   ) : (
