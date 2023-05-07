@@ -36,7 +36,7 @@ export default function EditProfile() {
   useEffect(() => {
      function fetchData() {
       // You can await here
-      const response = axios.get("http://localhost:3002/api/v1/user/retrieveProfile",
+      const response = axios.get("/user/retrieveProfile",
                         {
                           headers: ({
                               Authorization: 'Bearer ' + token
@@ -67,7 +67,7 @@ export default function EditProfile() {
   //   // const data = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10`).then(response => response.json());
   //   console.log('retrieving profile..')
   
-  //   const response=await axios.get("http://localhost:3002/api/v1/user/retrieveProfile",
+  //   const response=await axios.get("/user/retrieveProfile",
   //                       {
   //                         headers: ({
   //                             Authorization: 'Bearer ' + token
@@ -123,7 +123,7 @@ export default function EditProfile() {
   //   onSubmit: async (values, { setFieldError }) => {
   //     console.log('submitting profile..')
   //     try {
-  //       const response = await axios.put("http://localhost:3002/api/v1/user/updateProfile", {
+  //       const response = await axios.put("/user/updateProfile", {
   //         age: values.age,
   //         occupation: values.occupation,
   //         schOrEmployer: values.schOrEmployer,
@@ -183,7 +183,7 @@ export default function EditProfile() {
           onSubmit= {async (values, { setFieldError }) => {
             console.log('submitting profile..')
             try {
-              const response = await axios.put("http://localhost:3002/api/v1/user/updateProfile", {
+              const response = await axios.put("/user/updateProfile", {
                 age: values.age,
                 occupation: values.occupation,
                 schOrEmployer: values.schOrEmployer,

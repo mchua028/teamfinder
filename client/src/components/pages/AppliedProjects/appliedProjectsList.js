@@ -30,7 +30,7 @@ export default function AppliedProjectsList({ category }) {
 
     useEffect(() => {
        function fetchData() {
-        axios.get("http://localhost:3002/api/v1/application/user",
+        axios.get("/application/user",
                           {
                             headers: ({
                                 Authorization: 'Bearer ' + token

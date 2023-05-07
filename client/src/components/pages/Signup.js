@@ -46,7 +46,7 @@ export default function Signup(props) {
           password: values.password1
         };
         console.log(form.password);
-        const {data} = await axios.post("http://localhost:3002/api/v1/user/signup", form);  
+        const {data} = await axios.post("/user/signup", form);  
         if (data.status === parseInt('401')) {
           setErrorMessage(data.response)
         } else {

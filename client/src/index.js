@@ -12,10 +12,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { store } from "./store";
 import { ThemeProvider } from "@mui/material/styles";
 
-// initialize firebase web sdk
-// import "./utils/firebase.util";
-
-// axios.defaults.baseURL = "http://localhost:3002/api/v1";
+axios.defaults.baseURL =  process.env.REACT_APP_BASEURL;
 
 
 ReactDOM.render(

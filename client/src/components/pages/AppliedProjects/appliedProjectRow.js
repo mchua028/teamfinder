@@ -72,7 +72,7 @@ export default function AppliedProjectRow({ application, isOffered, onSelect }) 
                })
         .then(() => {
           //set status of application to offered in backend
-          axios.put("http://localhost:3002/api/v1/application/" + application._id,
+          axios.put("/application/" + application._id,
             {
               status: "ACCEPTED"
             },
@@ -111,7 +111,7 @@ export default function AppliedProjectRow({ application, isOffered, onSelect }) 
               })
         .then(() => {
           //set status of application to offered in backend
-          axios.put("http://localhost:3002/api/v1/application/" + application._id,
+          axios.put("/application/" + application._id,
             {
               status: "OFFER_REJECTED"
             },

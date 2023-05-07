@@ -39,7 +39,7 @@ export default function EditProject(props) {
   useEffect(() => {
      function fetchData() {
       // You can await here
-      axios.get("http://localhost:3002/api/v1/project/byId/"+projectId,
+      axios.get("/project/byId/"+projectId,
                         {
                           headers: ({
                               Authorization: 'Bearer ' + token
@@ -99,7 +99,7 @@ export default function EditProject(props) {
           onSubmit= {async (values, { setFieldError }) => {
             console.log('creating project...')
             try {
-              const response = await axios.put("http://localhost:3002/api/v1/project/"+projectId, {
+              const response = await axios.put("/project/"+projectId, {
                 projectName: values.projectName,
                 type: values.type,
                 category: values.category,

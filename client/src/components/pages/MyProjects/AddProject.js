@@ -67,7 +67,7 @@ export default function AddProject(props) {
           onSubmit= {async (values, { setFieldError }) => {
             console.log('creating project...')
             try {
-              const response = await axios.post("http://localhost:3002/api/v1/project/addProject", {
+              const response = await axios.post("/project/addProject", {
                 projectName: values.projectName,
                 type: values.type,
                 category: values.category,

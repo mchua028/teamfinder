@@ -85,7 +85,7 @@ export default function ProjectDetails(props) {
   useEffect(() => {
      function fetchData() {
       // You can await here
-        axios.get("http://localhost:3002/api/v1/project/byId/"+projectId,
+        axios.get("/project/byId/"+projectId,
                         {
                           headers: ({
                               Authorization: 'Bearer ' + token
@@ -107,7 +107,7 @@ export default function ProjectDetails(props) {
                             }
                         }
                         );
-        axios.get("http://localhost:3002/api/v1/application/project/"+projectId,
+        axios.get("/application/project/"+projectId,
                         {
                           headers: ({
                               Authorization: 'Bearer ' + token

@@ -37,7 +37,7 @@ function Login(props) {
             email: values.email,
             password: values.password
           };
-          const { data } = await axios.post("http://localhost:3002/api/v1/user/login", formData);
+          const { data } = await axios.post("/user/login", formData);
           if (data.status === parseInt('401')) {
             setErrorMessage(data.response)
           } else {

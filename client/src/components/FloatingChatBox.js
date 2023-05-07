@@ -73,7 +73,7 @@ const FloatingChatBox = () => {
   // useEffect(() => {
   //   function fetchData() {
   //    // You can await here
-  //    const response = axios.get("http://localhost:3002/api/v1/project/myprojects",
+  //    const response = axios.get("/project/myprojects",
   //                      {
   //                        headers: ({
   //                            Authorization: 'Bearer ' + token

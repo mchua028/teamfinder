@@ -34,7 +34,7 @@ export default function ProjectList({ category }) {
                 })
         .then(() => {
             //set status of application to applied in backend
-            axios.post("http://localhost:3002/api/v1/application/addApplication",
+            axios.post("/application/addApplication",
             {
                 projectId: projectId,
                 status: "NEW"
@@ -78,7 +78,7 @@ export default function ProjectList({ category }) {
     useEffect(() => {
        function fetchData() {
         if (category!=''){
-          axios.get("http://localhost:3002/api/v1/project/byCategory/"+category,
+          axios.get("/project/byCategory/"+category,
                           {
                             headers: ({
                                 Authorization: 'Bearer ' + token
@@ -102,7 +102,7 @@ export default function ProjectList({ category }) {
                           );
         }
         else{
-            axios.get("http://localhost:3002/api/v1/project/",
+            axios.get("/project/",
                           {
                             headers: ({
                                 Authorization: 'Bearer ' + token
@@ -125,7 +125,7 @@ export default function ProjectList({ category }) {
                           }
                           );
         }
-        axios.get("http://localhost:3002/api/v1/application/user",
+        axios.get("/application/user",
                           {
                             headers: ({
                                 Authorization: 'Bearer ' + token
